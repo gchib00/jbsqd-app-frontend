@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { createStore } from "redux";
+import allReducers from "./store/reducers";
+import { Provider } from "react-redux";
+import { CountriesListPage } from "./components/CountriesListPage";
+import { Navbar } from "./components/Navbar";
+import { Route, Routes, BrowserRouter} from "react-router-dom";
+import { RegistrationPage } from "./components/RegistrationPage";
+import { LoginPage } from "./components/LoginPage";
 
-function App() {
+const App = () => {
+  const store = createStore(allReducers);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Provider store={store}>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<CountriesListPage />} />
+          <Route path='/register' element={<RegistrationPage />} />
+          <Route path='/login' element={<LoginPage />} />
+        </Routes>
+      </Provider>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
