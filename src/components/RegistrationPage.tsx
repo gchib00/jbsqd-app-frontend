@@ -1,5 +1,6 @@
 import React, { FormEvent, useState } from "react";
 import styled from "styled-components";
+import { ErrorMessage } from "./ErrorMessage";
 
 const Form = styled.form`
   width: 340px;
@@ -36,15 +37,29 @@ export const RegistrationPage = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [repeatedPassword, setRepeatedPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    setError(""); //make sure error gets removed (in case it was visible)
     e.preventDefault(); //to avoid refreshing the page
     const newUserObj = {
       username: username,
       email: email,
-      password: password
+      password: password,
+      repeatedPassword: repeatedPassword
     };
-
+    const request = await fetch("/auth/register", { //pass newUserObj to the backend
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newUserObj)
+    });
+    if (!request.ok) { //display error message if request fails
+      const response = await request.json();
+      return response.message ? setError(response.message) : setError(response.error);
+    } else {
+      alert("create auto-login function here");
+    }
   };
 
   return(
@@ -69,7 +84,15 @@ export const RegistrationPage = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+      <InputField 
+        placeholder="Repeat password..." 
+        type="password"
+        autoComplete="off"
+        value={repeatedPassword}
+        onChange={(e) => setRepeatedPassword(e.target.value)}
+      />
       <SubmitButton type="submit">Register</SubmitButton>
+      <ErrorMessage text={error} />
     </Form>
   );
 };

@@ -37,12 +37,21 @@ const NavItem = styled(Link)`
 `;
 
 export const Navbar = () => {
+  //if token exists, it means user is logged in. In such cases we should show only the "Logout" button
+  const userToken = localStorage.getItem("token"); 
+  const logoutUser = () => {
+    localStorage.removeItem("token");
+  };
   return(
     <Header>
       <AppName>jbsqd-app</AppName>
       <Nav>
-        <NavItem to="/">Countries</NavItem>
-        <NavItem to="/register">Register</NavItem>
+        <NavItem to="/">Main</NavItem>
+        {userToken ? 
+          <NavItem to="#" onClick={logoutUser}>Logout</NavItem> //empty Link component that triggers fn to logout user
+        :
+          <NavItem to="/login">Login</NavItem>
+        }
       </Nav>
     </Header>
   );

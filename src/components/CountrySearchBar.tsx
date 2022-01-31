@@ -42,7 +42,7 @@ export const CountrySearchBar = () => {
     e.preventDefault(); //to avoid refreshing the page
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3001/countries?search=${search}`);
+      const response = await fetch(`/countries?search=${search}`);
       const countriesData = await response.json() as CountryName[];
       dispatch(updateCountries(countriesData));
       setLoading(false);
