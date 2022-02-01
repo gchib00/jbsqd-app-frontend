@@ -1,11 +1,11 @@
 import { ActionWithPayload } from "../../types";
 
-const countriesReducer = (state = "", action: ActionWithPayload) => {
+const userReducer = (state = null, action: ActionWithPayload) => {
   switch(action.type) {
-    case "UPDATE": 
+    case "LOGIN": 
       return action.payload;
     default: 
       return state;
   }
 };
-export default countriesReducer;
+export default userReducer;

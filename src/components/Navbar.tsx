@@ -1,6 +1,9 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { loginUser } from "../store/actions";
+import { State } from "../types";
 
 const Header = styled.header`
   background-color: white;
@@ -37,17 +40,22 @@ const NavItem = styled(Link)`
 `;
 
 export const Navbar = () => {
-  //if token exists, it means user is logged in. In such cases we should show only the "Logout" button
-  const userToken = localStorage.getItem("token"); 
+  const user = useSelector((state: State) => state.user);
+  const dispatch = useDispatch();
+  
   const logoutUser = () => {
-    localStorage.removeItem("token");
+    if(user && confirm(`You are currently logged in as ${user.username}. Are you sure you want to log-out?`)){
+      localStorage.removeItem("token"); //remove the user-token from the localStorage
+      dispatch(loginUser(undefined)); //empty the user state
+    }
   };
+  
   return(
     <Header>
       <AppName>jbsqd-app</AppName>
       <Nav>
         <NavItem to="/">Main</NavItem>
-        {userToken ? 
+        {user ? //if user is logged in, show "Logout" button, otherwise show "Login" option
           <NavItem to="#" onClick={logoutUser}>Logout</NavItem> //empty Link component that triggers fn to logout user
         :
           <NavItem to="/login">Login</NavItem>

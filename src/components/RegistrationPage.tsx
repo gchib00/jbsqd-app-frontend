@@ -1,5 +1,9 @@
 import React, { FormEvent, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { loginUser } from "../store/actions";
+import { Credentials } from "../types";
 import { ErrorMessage } from "./ErrorMessage";
 
 const Form = styled.form`
@@ -39,6 +43,27 @@ export const RegistrationPage = () => {
   const [password, setPassword] = useState<string>("");
   const [repeatedPassword, setRepeatedPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const autoLogin = async (credentials: Credentials) => {
+    const request = await fetch("/auth/login", { //pass credentials to the backend
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: credentials.username,
+        password: credentials.password
+      })
+    });
+    const response = await request.json();
+    if (!request.ok) { //display error message if request fails
+      return response.message ? setError(response.message) : setError(response.error);
+    } else {
+      //save token to localStorage so that user can be automatcally logged in after they reconnect to the app
+      localStorage.setItem("token", response.token);
+      dispatch(loginUser(response.user)); //add user to the state
+    }
+  };
   
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     setError(""); //make sure error gets removed (in case it was visible)
@@ -57,8 +82,13 @@ export const RegistrationPage = () => {
     if (!request.ok) { //display error message if request fails
       const response = await request.json();
       return response.message ? setError(response.message) : setError(response.error);
-    } else {
-      alert("create auto-login function here");
+    } else { //if registration is successful, automatically log-in the user
+      const credentials = {
+        username: newUserObj.username,
+        password: newUserObj.password
+      };
+      autoLogin(credentials);
+      navigate("/"); //redirect user to the main page
     }
   };
 
@@ -67,27 +97,28 @@ export const RegistrationPage = () => {
       <InputField 
         placeholder="Username..." 
         type="text"
+        required={true}
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <InputField 
         placeholder="Email address..." 
-        type="text"
-        autoComplete="off"
+        type="email"
+        required={true}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <InputField 
         placeholder="Password..." 
         type="password"
-        autoComplete="off"
+        required={true}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <InputField 
         placeholder="Repeat password..." 
         type="password"
-        autoComplete="off"
+        required={true}
         value={repeatedPassword}
         onChange={(e) => setRepeatedPassword(e.target.value)}
       />

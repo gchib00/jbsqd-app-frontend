@@ -1,6 +1,8 @@
 import React, { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { loginUser } from "../store/actions";
 import { ErrorMessage } from "./ErrorMessage";
 
 const Form = styled.form`
@@ -40,6 +42,8 @@ export const LoginPage = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     setError(""); //make sure error gets removed (in case it was visible)
@@ -59,6 +63,8 @@ export const LoginPage = () => {
     } else {
       //save token to localStorage so that user can be automatcally logged in after they reconnect to the app
       localStorage.setItem("token", response.token);
+      dispatch(loginUser(response.user)); //add user to the state
+      navigate("/"); //redirect user to main page
     }
   };
 

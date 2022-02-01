@@ -1,7 +1,8 @@
 import { Action } from "redux";
 
 export interface State {
-  countries: CountryName[];
+  countries?: CountryName[];
+  user?: User;
 }
 export interface CountryName {
   common: string;
@@ -10,4 +11,13 @@ export interface CountryName {
 }
 export interface ActionWithPayload extends Action {
   payload?: CountryName[];
+}
+export interface User {
+  username: string;
+  email: string;
+  password: string;
+}
+export interface Credentials {
+  username: string;
+  password: string;
 }
