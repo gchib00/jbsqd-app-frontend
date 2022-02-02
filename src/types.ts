@@ -11,10 +11,12 @@ export interface CountryName {
 }
 export interface ActionWithPayload extends Action {
   payload?: CountryName[];
+  outcome?: number;
 }
 export interface User {
   username: string;
   email: string;
+  coins: number;
   password: string;
 }
 export interface Credentials {

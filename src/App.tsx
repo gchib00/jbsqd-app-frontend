@@ -7,6 +7,7 @@ import { LoginPage } from "./components/LoginPage";
 import { State } from "./types";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "./store/actions";
+import { SlotMachinePage } from "./components/SlotMachinePage";
 
 const App = () => {
   const user = useSelector((state: State) => state.user);
@@ -34,12 +35,12 @@ const App = () => {
     }
   }, []);
 
-  console.log("logged user =", user);
   return (
     <BrowserRouter>
         <Navbar />
         <Routes>
           <Route path='/' element={<CountriesListPage />} />
+          <Route path='/slotMachine' element={<SlotMachinePage />} />
           <Route path='/register' element={<RegistrationPage />} />
           <Route path='/login' element={<LoginPage />} />
         </Routes>

@@ -55,6 +55,7 @@ export const Navbar = () => {
       <AppName>jbsqd-app</AppName>
       <Nav>
         <NavItem to="/">Main</NavItem>
+        <NavItem to="/slotMachine">Play</NavItem>
         {user ? //if user is logged in, show "Logout" button, otherwise show "Login" option
           <NavItem to="#" onClick={logoutUser}>Logout</NavItem> //empty Link component that triggers fn to logout user
         :
